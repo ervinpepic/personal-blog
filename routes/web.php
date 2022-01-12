@@ -16,10 +16,9 @@ use App\Models\Post;
 */
 
 Route::get('/', function () {
-    \Illuminate\Support\Facades\DB::listen(function ($query) {
-        logger($query->sql, $query->bindings);
-    });
-    return view('posts', ['posts' => Post::all()]);
+    return view('posts', [
+        'posts' => Post::with('category')->get()
+    ]);
 });
 
 Route::get('posts/{post:slug}', function (Post $post) {
