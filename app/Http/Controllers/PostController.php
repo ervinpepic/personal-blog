@@ -11,8 +11,9 @@ class PostController extends Controller
     {
 
         return view('posts.index', [
-            'posts' => Post::latest()->filter(request(['search', 'category', 'author']))->get()
+            'posts' => Post::latest()->filter(request(['search', 'category', 'author']))->paginate(6)->withQueryString()
         ]);
+        // return Post::latest()->filter(request(['search', 'category', 'author']))->paginate(2);
     }
 
     public function show(Post $post)
