@@ -17,15 +17,14 @@ class SessionsController extends Controller
             'email' => ['required', 'exists:users,email'],
             'password' => ['required']
         ]);
-        if (auth()->attempt($attributes)){
-            return redirect('/')->with('success', "Hello there, welcome back...");
+        if (! auth()->attempt($attributes)){
+            throw ValidationException::withMessages([
+                'email' => 'Your provided credential is wrong...'
+            ]);
         }
-        throw ValidationException::withMessages([
-            'email' => 'Your provided credential is wrong...'
-        ]);
-        // return back()
-        //     ->withInput()
-        //     ->withErrors(['email' => 'Your provided credential is wrong...']);
+
+        session()->regenerate();
+        return redirect('/')->with('success', "Hello there, welcome back...");
         
     }
 
