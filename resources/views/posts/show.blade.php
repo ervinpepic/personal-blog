@@ -38,12 +38,12 @@
                         </a>
 
                         <div class="space-x-2">
-                            <x-category-label :category="$post->category"/>
+                            <x-category-label :category="$post->category" />
                         </div>
                     </div>
 
                     <h1 class="font-bold text-3xl lg:text-4xl mb-10">
-                       {{ $post->title }}
+                        {{ $post->title }}
                     </h1>
 
                     <div class="space-y-4 lg:text-lg leading-loose">
@@ -51,11 +51,11 @@
                     </div>
                 </div>
                 <section class="col-span-8 col-start-5 mt-10 space-y-6">
+                    @include('posts._add-comment-form')
                     @foreach ($post->comments as $comment)
-                    <x-post-comment :comment="$comment"></x-post-comment>
+                        <x-post-comment :comment="$comment"></x-post-comment>
                     @endforeach
-                    
-                   
+
                 </section>
             </article>
         </main>
