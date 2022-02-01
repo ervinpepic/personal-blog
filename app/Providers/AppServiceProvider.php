@@ -4,9 +4,10 @@ namespace App\Providers;
 
 use App\Services\MailchimpNewsletter;
 use App\Services\Newsletter;
+use MailchimpMarketing\ApiClient;
+
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\ServiceProvider;
-use MailchimpMarketing\ApiClient;
 
 class AppServiceProvider extends ServiceProvider
 {

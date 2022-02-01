@@ -1,9 +1,8 @@
 <?php
 
 namespace App\Http\Controllers;
-
-use App\Models\Category;
 use App\Models\Post;
+use Symfony\Component\HttpFoundation\Response;
 
 class PostController extends Controller
 {
@@ -21,5 +20,16 @@ class PostController extends Controller
         return view('posts.show', [
             'post' => $post
         ]);
+    }
+
+    public function create()
+    {
+        if (auth()->guest()){
+            abort(Response::HTTP_FORBIDDEN);
+        }
+        if(auth()->user()->username !== 'ervinp') {
+            abort(Response::HTTP_FORBIDDEN);
+        }
+        return view('posts.create');
     }
 }
