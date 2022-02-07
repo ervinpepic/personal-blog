@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Post;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+
 class AdminPostController extends Controller
 {
     /**
@@ -37,17 +38,10 @@ class AdminPostController extends Controller
      */
     public function store()
     {
-        $attributes = request()->validate([
-            'title' => 'required',
-            'slug' => ['required', Rule::unique('posts', 'slug')],
-            'image' => 'required|image',
-            'excerpt' => 'required',
-            'body' => 'required',
-            'category_id' => ['required', Rule::exists('categories', 'id')]
+        $attributes = array_merge($this->validatePost(), [
+            'user_id' => auth()->id(),
+            'image' => request()->file('image')->store('blog_assets')
         ]);
-
-        $attributes['user_id'] = auth()->id();
-        $attributes['image'] = request()->file('image')->store('blog_assets');
 
         Post::create($attributes);
 
@@ -87,19 +81,14 @@ class AdminPostController extends Controller
      */
     public function update(Post $post)
     {
-        $attributes = request()->validate([
-            'title' => 'required',
-            'slug' => ['required', Rule::unique('posts', 'slug')->ignore($post->id)],
-            'image' => 'image',
-            'excerpt' => 'required',
-            'body' => 'required',
-            'category_id' => ['required', Rule::exists('categories', 'id')]
-        ]);
+        $attributes = $this->validatePost($post);
 
-        $post->update($attributes);
-        if (isset($attributes['image'])) {
+        if ($attributes['image'] ?? false) {
             $attributes['image'] = request()->file('image')->store('blog_assets');
         }
+
+        $post->update($attributes);
+
         return back()->with('success', 'You just updated the post successfully :)');
     }
 
@@ -113,5 +102,19 @@ class AdminPostController extends Controller
     {
         $post->delete();
         return back()->with('success', 'Post deleted :(');
+    }
+
+    protected function validatePost(?Post $post = null): array
+    {
+        $post ??= new Post();
+
+        return request()->validate([
+            'title' => 'required',
+            'slug' => ['required', Rule::unique('posts', 'slug')->ignore($post)],
+            'image' => $post->exists ? ['image'] : ['required', 'image'],
+            'excerpt' => 'required',
+            'body' => 'required',
+            'category_id' => ['required', Rule::exists('categories', 'id')]
+        ]);
     }
 }
