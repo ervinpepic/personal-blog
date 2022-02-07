@@ -1,9 +1,8 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\Models\Post;
 
-use Symfony\Component\HttpFoundation\Response;
+use App\Models\Post;
 
 class PostController extends Controller
 {
@@ -22,5 +21,4 @@ class PostController extends Controller
             'post' => $post
         ]);
     }
-
 }
